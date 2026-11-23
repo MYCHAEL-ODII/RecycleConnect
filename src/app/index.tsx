@@ -1,98 +1,284 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import React from 'react';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  useWindowDimensions,
+  Alert,
+} from 'react-native';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+
+
+const COLORS = {
+  header: '#292929',
+  background: '#16A34A',
+  white: '#FFFFFF',
+  black: '#171717',
+};
+
+export default function WelcomeScreen() {
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
+  const logoSize = Math.min(width * 0.51, 230);
+  const logoFontSize = logoSize * 0.72;
+
+  const handleLogin = () => {
+    Alert.alert('Log in', 'The login screen will be implemented next.');
+  };
+
+  const handleSignup = () => {
+    Alert.alert('Sign up', 'The registration screen will be implemented next.');
+  };
+
+  const handleTrackPickup = () => {
+    Alert.alert('Track Pickup', 'Pickup tracking will be implemented next.');
+  };
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <View style={styles.container}>
+      <StatusBar
+          style="light" />
+        
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+      {/* HEADER */}
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: insets.top,
+          },
+        ]}
+      >
+        <View style={styles.headerContent}>
+          <Pressable
+            style={styles.trackButton}
+            onPress={handleTrackPickup}
+          >
+            <Text style={styles.trackIcon}>♧</Text>
+            <Text style={styles.trackText}>TRACK PICKUP</Text>
+          </Pressable>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+          <View style={styles.headerActions}>
+            <Pressable
+              style={styles.loginButton}
+              onPress={handleLogin}
+            >
+              <Text style={styles.loginText}>Log in</Text>
+            </Pressable>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+            <Pressable
+              style={styles.signupButton}
+              onPress={handleSignup}
+            >
+              <Text style={styles.signupText}>Sign up for free</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      {/* WELCOME CONTENT */}
+      <View style={styles.welcomeContainer}>
+        <View
+          style={[
+            styles.mainContent,
+            {
+              paddingTop: Math.max(28, height * 0.045),
+            },
+          ]}
+        >
+          {/* RECYCLING LOGO */}
+          <View
+            style={[
+              styles.logoCircle,
+              {
+                width: logoSize,
+                height: logoSize,
+                borderRadius: logoSize / 2,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.recycleLogo,
+                {
+                  fontSize: logoFontSize,
+                },
+              ]}
+            >
+              ♻️
+            </Text>
+          </View>
+
+          {/* APP NAME */}
+          <View style={styles.brandContainer}>
+            <Text style={styles.brandText}>
+              Recycle
+            </Text>
+
+            <Text style={styles.brandText}>
+              Connect
+            </Text>
+          </View>
+
+          {/* TAGLINE */}
+          <Text style={styles.tagline}>
+            Recycle. Earn. Sustain.
+          </Text>
+        </View>
+
+        {/* VERSION */}
+        <View
+          style={[
+            styles.versionContainer,
+            {
+              paddingBottom: Math.max(20, insets.bottom + 12),
+            },
+          ]}
+        >
+          <Text style={styles.versionText}>v1.0.0</Text>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: COLORS.background,
+  },
+
+  header: {
+    backgroundColor: COLORS.header,
+  },
+
+  headerContent: {
+    minHeight: 56,
+    paddingHorizontal: 12,
     flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    justifyContent: 'space-between',
   },
-  heroSection: {
+
+  trackButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 9,
+    flexShrink: 1,
+  },
+
+  trackIcon: {
+    color: COLORS.white,
+    fontSize: 30,
+  },
+
+  trackText: {
+    color: COLORS.white,
+    fontSize: 13,
+    fontWeight: '500',
+    letterSpacing: 0.3,
+  },
+
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+
+  loginButton: {
+    minHeight: 40,
+    paddingHorizontal: 12,
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: COLORS.white,
+    borderRadius: 9,
   },
-  title: {
+
+  loginText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+
+  signupButton: {
+    minHeight: 40,
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 9,
+  },
+
+  signupText: {
+    color: COLORS.black,
+    fontSize: 13,
+    fontWeight: '500',
+  },
+
+  welcomeContainer: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    borderTopLeftRadius: 42,
+    borderTopRightRadius: 42,
+    overflow: 'hidden',
+    alignItems: 'center',
+  },
+
+  mainContent: {
+    width: '100%',
+    alignItems: 'center',
+  },
+
+  logoCircle: {
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  recycleLogo: {
+    includeFontPadding: false,
     textAlign: 'center',
   },
-  code: {
-    textTransform: 'uppercase',
+
+  brandContainer: {
+    alignItems: 'center',
+    marginTop: 15,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  brandText: {
+    color: COLORS.white,
+    fontSize: 48,
+    fontWeight: '800',
+    lineHeight: 60,
+    letterSpacing: -1.5,
+    textAlign: 'center',
+  },
+
+  tagline: {
+    color: COLORS.white,
+    fontSize: 18,
+    fontWeight: '400',
+    marginTop: 12,
+    textAlign: 'center',
+  },
+
+  versionContainer: {
+    position: 'absolute',
+    bottom: 0,
+    alignItems: 'center',
+    width: '100%',
+  },
+
+  versionText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: '400',
   },
 });
