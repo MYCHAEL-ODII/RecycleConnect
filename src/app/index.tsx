@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useRouter } from 'expo-router';
 
 import {
   View,
@@ -22,6 +23,7 @@ const COLORS = {
 };
 
 export default function WelcomeScreen() {
+  const router = useRouter();
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
@@ -29,11 +31,11 @@ export default function WelcomeScreen() {
   const logoFontSize = logoSize * 0.72;
 
   const handleLogin = () => {
-    Alert.alert('Log in', 'The login screen will be implemented next.');
-  };
+  router.push('/login');
+};
 
   const handleSignup = () => {
-    Alert.alert('Sign up', 'The registration screen will be implemented next.');
+    router.push('/signup');
   };
 
   const handleTrackPickup = () => {
